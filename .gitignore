@@ -30,3 +30,11 @@ build/
 .settings/
 
 jacoco.xml
+.idea/.gitignore
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/jarRepositories.xml
+.idea/misc.xml
+.idea/uiDesigner.xml
+.idea/vcs.xml
+.DS_Store

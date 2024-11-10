@@ -2,10 +2,13 @@ package com.example.geektrust.entities;
 
 import com.example.geektrust.enums.RideStatus;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class Ride {
-    private String rideId;
-    private Rider rider;
-    private Driver driver;
+    private final String rideId;
+    private final Rider rider;
+    private final Driver driver;
     private RideStatus rideStatus = RideStatus.RIDE_REQUESTED;
     private Location destination;
     private double traveledDistanceInKm;
@@ -23,6 +26,10 @@ public class Ride {
     }
 
     public void stop(Location destination, long timeTaken) {
+        if (rideStatus != RideStatus.RIDE_STARTED) {
+            throw new IllegalStateException("Ride is not started");
+        }
+
         System.out.println("RIDE_STOPPED " + rideId);
         rideStatus = RideStatus.RIDE_ENDED;
         this.destination = destination;
@@ -30,13 +37,14 @@ public class Ride {
         this.traveledDistanceInKm = calculateDistance(rider.getLocation().getX(), rider.getLocation().getY(), destination.getX(), destination.getY());
     }
 
-    private double getTotalBill() {
+    public double getTotalBill() {
         final int baseFare = 50;
         final float perKm = 6.5f;
         final int perMin = 2;
         final float serviceCharge = 1.20f;
+        final double totalFare = (baseFare + (perKm * traveledDistanceInKm) + (perMin * timeTaken)) * serviceCharge;
 
-        return (baseFare + (perKm * traveledDistanceInKm) + (perMin * timeTaken)) * serviceCharge;
+        return BigDecimal.valueOf(totalFare).setScale(2, RoundingMode.HALF_DOWN).doubleValue();
     }
 
     public void bill() {
@@ -71,5 +79,9 @@ public class Ride {
 
     public long getTimeTaken() {
         return timeTaken;
+    }
+
+    public double getTraveledDistanceInKm() {
+        return traveledDistanceInKm;
     }
 }

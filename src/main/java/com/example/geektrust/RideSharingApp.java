@@ -113,4 +113,8 @@ public class RideSharingApp {
             }
         }
     }
+
+    public List<String> getCommands() {
+        return commands;
+    }
 }
